@@ -1,0 +1,167 @@
+ARM GAS  C:\Users\HolmesPC\AppData\Local\Temp\ccJIQrDi.s 			page 1
+
+
+   1              		.cpu cortex-m3
+   2              		.arch armv7-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"rs485.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.RS485_Init,"ax",%progbits
+  18              		.align	1
+  19              		.global	RS485_Init
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  24              	RS485_Init:
+  25              	.LFB65:
+  26              		.file 1 "Core/Src/rs485.c"
+   1:Core/Src/rs485.c **** #include "rs485.h"
+   2:Core/Src/rs485.c **** #include <string.h>
+   3:Core/Src/rs485.c **** 
+   4:Core/Src/rs485.c **** /* Hàm khởi tạo cấu hình ban đầu cho RS485 */
+   5:Core/Src/rs485.c **** void RS485_Init(void)
+   6:Core/Src/rs485.c **** {
+  27              		.loc 1 6 1 view -0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31 0000 08B5     		push	{r3, lr}
+  32              	.LCFI0:
+  33              		.cfi_def_cfa_offset 8
+  34              		.cfi_offset 3, -8
+  35              		.cfi_offset 14, -4
+   7:Core/Src/rs485.c ****     // Mặc định kéo chân DIR xuống LOW (Đặt MAX485 ở chế độ Nhận - Receiver)
+   8:Core/Src/rs485.c ****     HAL_GPIO_WritePin(RS485_DIR_PORT, RS485_DIR_PIN, GPIO_PIN_RESET);
+  36              		.loc 1 8 5 view .LVU1
+  37 0002 0022     		movs	r2, #0
+  38 0004 4FF48071 		mov	r1, #256
+  39 0008 0148     		ldr	r0, .L3
+  40 000a FFF7FEFF 		bl	HAL_GPIO_WritePin
+  41              	.LVL0:
+   9:Core/Src/rs485.c **** }
+  42              		.loc 1 9 1 is_stmt 0 view .LVU2
+  43 000e 08BD     		pop	{r3, pc}
+  44              	.L4:
+  45              		.align	2
+  46              	.L3:
+  47 0010 00080140 		.word	1073809408
+  48              		.cfi_endproc
+  49              	.LFE65:
+ARM GAS  C:\Users\HolmesPC\AppData\Local\Temp\ccJIQrDi.s 			page 2
+
+
+  51              		.section	.text.RS485_SendString,"ax",%progbits
+  52              		.align	1
+  53              		.global	RS485_SendString
+  54              		.syntax unified
+  55              		.thumb
+  56              		.thumb_func
+  58              	RS485_SendString:
+  59              	.LVL1:
+  60              	.LFB66:
+  10:Core/Src/rs485.c **** 
+  11:Core/Src/rs485.c **** /* Hàm gửi một chuỗi ký tự qua đường truyền RS485 */
+  12:Core/Src/rs485.c **** void RS485_SendString(char *str)
+  13:Core/Src/rs485.c **** {
+  61              		.loc 1 13 1 is_stmt 1 view -0
+  62              		.cfi_startproc
+  63              		@ args = 0, pretend = 0, frame = 0
+  64              		@ frame_needed = 0, uses_anonymous_args = 0
+  65              		.loc 1 13 1 is_stmt 0 view .LVU4
+  66 0000 38B5     		push	{r3, r4, r5, lr}
+  67              	.LCFI1:
+  68              		.cfi_def_cfa_offset 16
+  69              		.cfi_offset 3, -16
+  70              		.cfi_offset 4, -12
+  71              		.cfi_offset 5, -8
+  72              		.cfi_offset 14, -4
+  73 0002 0446     		mov	r4, r0
+  14:Core/Src/rs485.c ****     // 1. Chuyển sang chế độ Phát (Transmitter) - Kéo chân DIR lên HIGH
+  15:Core/Src/rs485.c ****     HAL_GPIO_WritePin(RS485_DIR_PORT, RS485_DIR_PIN, GPIO_PIN_SET);
+  74              		.loc 1 15 5 is_stmt 1 view .LVU5
+  75 0004 0B4D     		ldr	r5, .L7
+  76 0006 0122     		movs	r2, #1
+  77 0008 4FF48071 		mov	r1, #256
+  78 000c 2846     		mov	r0, r5
+  79              	.LVL2:
+  80              		.loc 1 15 5 is_stmt 0 view .LVU6
+  81 000e FFF7FEFF 		bl	HAL_GPIO_WritePin
+  82              	.LVL3:
+  16:Core/Src/rs485.c ****     
+  17:Core/Src/rs485.c ****     // 2. Gửi toàn bộ dữ liệu qua hàm HAL của UART (Bao gồm Timeout 1000ms)
+  18:Core/Src/rs485.c ****     HAL_UART_Transmit(&huart1, (uint8_t *)str, strlen(str), 1000);
+  83              		.loc 1 18 5 is_stmt 1 view .LVU7
+  84              		.loc 1 18 48 is_stmt 0 view .LVU8
+  85 0012 2046     		mov	r0, r4
+  86 0014 FFF7FEFF 		bl	strlen
+  87              	.LVL4:
+  88              		.loc 1 18 5 view .LVU9
+  89 0018 4FF47A73 		mov	r3, #1000
+  90 001c 82B2     		uxth	r2, r0
+  91 001e 2146     		mov	r1, r4
+  92 0020 0548     		ldr	r0, .L7+4
+  93 0022 FFF7FEFF 		bl	HAL_UART_Transmit
+  94              	.LVL5:
+  19:Core/Src/rs485.c ****     
+  20:Core/Src/rs485.c ****     // 3. Chuyển lại chế độ Nhận (Receiver) ngay sau khi gửi xong
+  21:Core/Src/rs485.c ****     HAL_GPIO_WritePin(RS485_DIR_PORT, RS485_DIR_PIN, GPIO_PIN_RESET);
+  95              		.loc 1 21 5 is_stmt 1 view .LVU10
+  96 0026 0022     		movs	r2, #0
+ARM GAS  C:\Users\HolmesPC\AppData\Local\Temp\ccJIQrDi.s 			page 3
+
+
+  97 0028 4FF48071 		mov	r1, #256
+  98 002c 2846     		mov	r0, r5
+  99 002e FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 100              	.LVL6:
+  22:Core/Src/rs485.c **** }...
+ 101              		.loc 1 22 1 is_stmt 0 view .LVU11
+ 102 0032 38BD     		pop	{r3, r4, r5, pc}
+ 103              	.LVL7:
+ 104              	.L8:
+ 105              		.loc 1 22 1 view .LVU12
+ 106              		.align	2
+ 107              	.L7:
+ 108 0034 00080140 		.word	1073809408
+ 109 0038 00000000 		.word	huart1
+ 110              		.cfi_endproc
+ 111              	.LFE66:
+ 113              		.text
+ 114              	.Letext0:
+ 115              		.file 2 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2021.10\\arm-none-eabi\\include\\
+ 116              		.file 3 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2021.10\\arm-none-eabi\\include\\
+ 117              		.file 4 "Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f103xb.h"
+ 118              		.file 5 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_def.h"
+ 119              		.file 6 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_gpio.h"
+ 120              		.file 7 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_dma.h"
+ 121              		.file 8 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h"
+ 122              		.file 9 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2021.10\\arm-none-eabi\\include\\
+ 123              		.file 10 "Core/Inc/rs485.h"
+ARM GAS  C:\Users\HolmesPC\AppData\Local\Temp\ccJIQrDi.s 			page 4
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 rs485.c
+C:\Users\HolmesPC\AppData\Local\Temp\ccJIQrDi.s:18     .text.RS485_Init:00000000 $t
+C:\Users\HolmesPC\AppData\Local\Temp\ccJIQrDi.s:24     .text.RS485_Init:00000000 RS485_Init
+C:\Users\HolmesPC\AppData\Local\Temp\ccJIQrDi.s:47     .text.RS485_Init:00000010 $d
+C:\Users\HolmesPC\AppData\Local\Temp\ccJIQrDi.s:52     .text.RS485_SendString:00000000 $t
+C:\Users\HolmesPC\AppData\Local\Temp\ccJIQrDi.s:58     .text.RS485_SendString:00000000 RS485_SendString
+C:\Users\HolmesPC\AppData\Local\Temp\ccJIQrDi.s:108    .text.RS485_SendString:00000034 $d
+
+UNDEFINED SYMBOLS
+HAL_GPIO_WritePin
+strlen
+HAL_UART_Transmit
+huart1

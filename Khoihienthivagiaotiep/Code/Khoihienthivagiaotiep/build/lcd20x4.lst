@@ -1,0 +1,838 @@
+ARM GAS  C:\Users\HolmesPC\AppData\Local\Temp\cc1XSDWq.s 			page 1
+
+
+   1              		.cpu cortex-m3
+   2              		.arch armv7-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"lcd20x4.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.delay_us,"ax",%progbits
+  18              		.align	1
+  19              		.global	delay_us
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  24              	delay_us:
+  25              	.LVL0:
+  26              	.LFB65:
+  27              		.file 1 "Core/Src/lcd20x4.c"
+   1:Core/Src/lcd20x4.c **** #include "lcd20x4.h"
+   2:Core/Src/lcd20x4.c **** 
+   3:Core/Src/lcd20x4.c **** /* Hàm tạo trễ micro giây (tương đối) dùng cho mạch thật 
+   4:Core/Src/lcd20x4.c ****    (Giả sử chip chạy ở thạch anh 72MHz) */
+   5:Core/Src/lcd20x4.c **** void delay_us(uint16_t us)
+   6:Core/Src/lcd20x4.c **** {
+  28              		.loc 1 6 1 view -0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 8
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              		@ link register save eliminated.
+  33              		.loc 1 6 1 is_stmt 0 view .LVU1
+  34 0000 82B0     		sub	sp, sp, #8
+  35              	.LCFI0:
+  36              		.cfi_def_cfa_offset 8
+   7:Core/Src/lcd20x4.c ****     // Ở mạch thật, vòng lặp này có tốc độ chạy chính xác hơn rất nhiều
+   8:Core/Src/lcd20x4.c ****     for (volatile uint32_t i = 0; i < (us * (72/4)); i++) 
+  37              		.loc 1 8 5 is_stmt 1 view .LVU2
+  38              	.LBB2:
+  39              		.loc 1 8 10 view .LVU3
+  40              		.loc 1 8 28 is_stmt 0 view .LVU4
+  41 0002 0023     		movs	r3, #0
+  42 0004 0193     		str	r3, [sp, #4]
+  43              		.loc 1 8 5 view .LVU5
+  44 0006 03E0     		b	.L2
+  45              	.L3:
+   9:Core/Src/lcd20x4.c ****     {
+  10:Core/Src/lcd20x4.c ****         __NOP();
+  46              		.loc 1 10 9 is_stmt 1 discriminator 3 view .LVU6
+  47              		.syntax unified
+  48              	@ 10 "Core/Src/lcd20x4.c" 1
+ARM GAS  C:\Users\HolmesPC\AppData\Local\Temp\cc1XSDWq.s 			page 2
+
+
+  49 0008 00BF     		nop
+  50              	@ 0 "" 2
+   8:Core/Src/lcd20x4.c ****     {
+  51              		.loc 1 8 54 discriminator 3 view .LVU7
+   8:Core/Src/lcd20x4.c ****     {
+  52              		.loc 1 8 55 is_stmt 0 discriminator 3 view .LVU8
+  53              		.thumb
+  54              		.syntax unified
+  55 000a 019B     		ldr	r3, [sp, #4]
+  56 000c 0133     		adds	r3, r3, #1
+  57 000e 0193     		str	r3, [sp, #4]
+  58              	.L2:
+   8:Core/Src/lcd20x4.c ****     {
+  59              		.loc 1 8 35 is_stmt 1 discriminator 1 view .LVU9
+   8:Core/Src/lcd20x4.c ****     {
+  60              		.loc 1 8 43 is_stmt 0 discriminator 1 view .LVU10
+  61 0010 00EBC003 		add	r3, r0, r0, lsl #3
+   8:Core/Src/lcd20x4.c ****     {
+  62              		.loc 1 8 37 discriminator 1 view .LVU11
+  63 0014 019A     		ldr	r2, [sp, #4]
+   8:Core/Src/lcd20x4.c ****     {
+  64              		.loc 1 8 5 discriminator 1 view .LVU12
+  65 0016 B2EB430F 		cmp	r2, r3, lsl #1
+  66 001a F5D3     		bcc	.L3
+  67              	.LBE2:
+  11:Core/Src/lcd20x4.c ****     }
+  12:Core/Src/lcd20x4.c **** }
+  68              		.loc 1 12 1 view .LVU13
+  69 001c 02B0     		add	sp, sp, #8
+  70              	.LCFI1:
+  71              		.cfi_def_cfa_offset 0
+  72              		@ sp needed
+  73 001e 7047     		bx	lr
+  74              		.cfi_endproc
+  75              	.LFE65:
+  77              		.section	.text.LCD_Send_4Bit,"ax",%progbits
+  78              		.align	1
+  79              		.global	LCD_Send_4Bit
+  80              		.syntax unified
+  81              		.thumb
+  82              		.thumb_func
+  84              	LCD_Send_4Bit:
+  85              	.LVL1:
+  86              	.LFB66:
+  13:Core/Src/lcd20x4.c **** 
+  14:Core/Src/lcd20x4.c **** /* Hàm gửi 4 bit dữ liệu ra các chân GPIO */
+  15:Core/Src/lcd20x4.c **** void LCD_Send_4Bit(uint8_t data)
+  16:Core/Src/lcd20x4.c **** {
+  87              		.loc 1 16 1 is_stmt 1 view -0
+  88              		.cfi_startproc
+  89              		@ args = 0, pretend = 0, frame = 0
+  90              		@ frame_needed = 0, uses_anonymous_args = 0
+  91              		.loc 1 16 1 is_stmt 0 view .LVU15
+  92 0000 38B5     		push	{r3, r4, r5, lr}
+  93              	.LCFI2:
+  94              		.cfi_def_cfa_offset 16
+  95              		.cfi_offset 3, -16
+ARM GAS  C:\Users\HolmesPC\AppData\Local\Temp\cc1XSDWq.s 			page 3
+
+
+  96              		.cfi_offset 4, -12
+  97              		.cfi_offset 5, -8
+  98              		.cfi_offset 14, -4
+  99 0002 0446     		mov	r4, r0
+  17:Core/Src/lcd20x4.c ****     HAL_GPIO_WritePin(LCD_PORT, D4_PIN, ((data >> 0) & 0x01) ? GPIO_PIN_SET : GPIO_PIN_RESET);
+ 100              		.loc 1 17 5 is_stmt 1 view .LVU16
+ 101 0004 0C4D     		ldr	r5, .L7
+ 102 0006 00F00102 		and	r2, r0, #1
+ 103 000a 0821     		movs	r1, #8
+ 104 000c 2846     		mov	r0, r5
+ 105              	.LVL2:
+ 106              		.loc 1 17 5 is_stmt 0 view .LVU17
+ 107 000e FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 108              	.LVL3:
+  18:Core/Src/lcd20x4.c ****     HAL_GPIO_WritePin(LCD_PORT, D5_PIN, ((data >> 1) & 0x01) ? GPIO_PIN_SET : GPIO_PIN_RESET);
+ 109              		.loc 1 18 5 is_stmt 1 view .LVU18
+ 110 0012 C4F34002 		ubfx	r2, r4, #1, #1
+ 111 0016 1021     		movs	r1, #16
+ 112 0018 2846     		mov	r0, r5
+ 113 001a FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 114              	.LVL4:
+  19:Core/Src/lcd20x4.c ****     HAL_GPIO_WritePin(LCD_PORT, D6_PIN, ((data >> 2) & 0x01) ? GPIO_PIN_SET : GPIO_PIN_RESET);
+ 115              		.loc 1 19 5 view .LVU19
+ 116 001e C4F38002 		ubfx	r2, r4, #2, #1
+ 117 0022 2021     		movs	r1, #32
+ 118 0024 2846     		mov	r0, r5
+ 119 0026 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 120              	.LVL5:
+  20:Core/Src/lcd20x4.c ****     HAL_GPIO_WritePin(LCD_PORT, D7_PIN, ((data >> 3) & 0x01) ? GPIO_PIN_SET : GPIO_PIN_RESET);
+ 121              		.loc 1 20 5 view .LVU20
+ 122 002a C4F3C002 		ubfx	r2, r4, #3, #1
+ 123 002e 4021     		movs	r1, #64
+ 124 0030 2846     		mov	r0, r5
+ 125 0032 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 126              	.LVL6:
+  21:Core/Src/lcd20x4.c **** }
+ 127              		.loc 1 21 1 is_stmt 0 view .LVU21
+ 128 0036 38BD     		pop	{r3, r4, r5, pc}
+ 129              	.L8:
+ 130              		.align	2
+ 131              	.L7:
+ 132 0038 00080140 		.word	1073809408
+ 133              		.cfi_endproc
+ 134              	.LFE66:
+ 136              		.section	.text.LCD_Command,"ax",%progbits
+ 137              		.align	1
+ 138              		.global	LCD_Command
+ 139              		.syntax unified
+ 140              		.thumb
+ 141              		.thumb_func
+ 143              	LCD_Command:
+ 144              	.LVL7:
+ 145              	.LFB67:
+  22:Core/Src/lcd20x4.c **** 
+  23:Core/Src/lcd20x4.c **** /* Hàm gửi lệnh (Command) tới LCD */
+  24:Core/Src/lcd20x4.c **** void LCD_Command(uint8_t cmd)
+  25:Core/Src/lcd20x4.c **** {
+ARM GAS  C:\Users\HolmesPC\AppData\Local\Temp\cc1XSDWq.s 			page 4
+
+
+ 146              		.loc 1 25 1 is_stmt 1 view -0
+ 147              		.cfi_startproc
+ 148              		@ args = 0, pretend = 0, frame = 0
+ 149              		@ frame_needed = 0, uses_anonymous_args = 0
+ 150              		.loc 1 25 1 is_stmt 0 view .LVU23
+ 151 0000 38B5     		push	{r3, r4, r5, lr}
+ 152              	.LCFI3:
+ 153              		.cfi_def_cfa_offset 16
+ 154              		.cfi_offset 3, -16
+ 155              		.cfi_offset 4, -12
+ 156              		.cfi_offset 5, -8
+ 157              		.cfi_offset 14, -4
+ 158 0002 0546     		mov	r5, r0
+  26:Core/Src/lcd20x4.c ****     // Chọn thanh ghi lệnh (RS = 0)
+  27:Core/Src/lcd20x4.c ****     HAL_GPIO_WritePin(LCD_PORT, RS_PIN, GPIO_PIN_RESET);
+ 159              		.loc 1 27 5 is_stmt 1 view .LVU24
+ 160 0004 164C     		ldr	r4, .L11
+ 161 0006 0022     		movs	r2, #0
+ 162 0008 0221     		movs	r1, #2
+ 163 000a 2046     		mov	r0, r4
+ 164              	.LVL8:
+ 165              		.loc 1 27 5 is_stmt 0 view .LVU25
+ 166 000c FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 167              	.LVL9:
+  28:Core/Src/lcd20x4.c ****     
+  29:Core/Src/lcd20x4.c ****     // Gửi 4 bit cao
+  30:Core/Src/lcd20x4.c ****     LCD_Send_4Bit(cmd >> 4);
+ 168              		.loc 1 30 5 is_stmt 1 view .LVU26
+ 169 0010 2809     		lsrs	r0, r5, #4
+ 170 0012 FFF7FEFF 		bl	LCD_Send_4Bit
+ 171              	.LVL10:
+  31:Core/Src/lcd20x4.c ****     HAL_GPIO_WritePin(LCD_PORT, EN_PIN, GPIO_PIN_SET);
+ 172              		.loc 1 31 5 view .LVU27
+ 173 0016 0122     		movs	r2, #1
+ 174 0018 0421     		movs	r1, #4
+ 175 001a 2046     		mov	r0, r4
+ 176 001c FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 177              	.LVL11:
+  32:Core/Src/lcd20x4.c ****     delay_us(50);
+ 178              		.loc 1 32 5 view .LVU28
+ 179 0020 3220     		movs	r0, #50
+ 180 0022 FFF7FEFF 		bl	delay_us
+ 181              	.LVL12:
+  33:Core/Src/lcd20x4.c ****     HAL_GPIO_WritePin(LCD_PORT, EN_PIN, GPIO_PIN_RESET);
+ 182              		.loc 1 33 5 view .LVU29
+ 183 0026 0022     		movs	r2, #0
+ 184 0028 0421     		movs	r1, #4
+ 185 002a 2046     		mov	r0, r4
+ 186 002c FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 187              	.LVL13:
+  34:Core/Src/lcd20x4.c ****     delay_us(50);
+ 188              		.loc 1 34 5 view .LVU30
+ 189 0030 3220     		movs	r0, #50
+ 190 0032 FFF7FEFF 		bl	delay_us
+ 191              	.LVL14:
+  35:Core/Src/lcd20x4.c ****     
+  36:Core/Src/lcd20x4.c ****     // Gửi 4 bit thấp
+ARM GAS  C:\Users\HolmesPC\AppData\Local\Temp\cc1XSDWq.s 			page 5
+
+
+  37:Core/Src/lcd20x4.c ****     LCD_Send_4Bit(cmd & 0x0F);
+ 192              		.loc 1 37 5 view .LVU31
+ 193 0036 05F00F00 		and	r0, r5, #15
+ 194 003a FFF7FEFF 		bl	LCD_Send_4Bit
+ 195              	.LVL15:
+  38:Core/Src/lcd20x4.c ****     HAL_GPIO_WritePin(LCD_PORT, EN_PIN, GPIO_PIN_SET);
+ 196              		.loc 1 38 5 view .LVU32
+ 197 003e 0122     		movs	r2, #1
+ 198 0040 0421     		movs	r1, #4
+ 199 0042 2046     		mov	r0, r4
+ 200 0044 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 201              	.LVL16:
+  39:Core/Src/lcd20x4.c ****     delay_us(50);
+ 202              		.loc 1 39 5 view .LVU33
+ 203 0048 3220     		movs	r0, #50
+ 204 004a FFF7FEFF 		bl	delay_us
+ 205              	.LVL17:
+  40:Core/Src/lcd20x4.c ****     HAL_GPIO_WritePin(LCD_PORT, EN_PIN, GPIO_PIN_RESET);
+ 206              		.loc 1 40 5 view .LVU34
+ 207 004e 0022     		movs	r2, #0
+ 208 0050 0421     		movs	r1, #4
+ 209 0052 2046     		mov	r0, r4
+ 210 0054 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 211              	.LVL18:
+  41:Core/Src/lcd20x4.c ****     
+  42:Core/Src/lcd20x4.c ****     // Mạch thật dùng HAL_Delay rất chính xác
+  43:Core/Src/lcd20x4.c ****     HAL_Delay(2); 
+ 212              		.loc 1 43 5 view .LVU35
+ 213 0058 0220     		movs	r0, #2
+ 214 005a FFF7FEFF 		bl	HAL_Delay
+ 215              	.LVL19:
+  44:Core/Src/lcd20x4.c **** }
+ 216              		.loc 1 44 1 is_stmt 0 view .LVU36
+ 217 005e 38BD     		pop	{r3, r4, r5, pc}
+ 218              	.L12:
+ 219              		.align	2
+ 220              	.L11:
+ 221 0060 00080140 		.word	1073809408
+ 222              		.cfi_endproc
+ 223              	.LFE67:
+ 225              		.section	.text.LCD_Data,"ax",%progbits
+ 226              		.align	1
+ 227              		.global	LCD_Data
+ 228              		.syntax unified
+ 229              		.thumb
+ 230              		.thumb_func
+ 232              	LCD_Data:
+ 233              	.LVL20:
+ 234              	.LFB68:
+  45:Core/Src/lcd20x4.c **** 
+  46:Core/Src/lcd20x4.c **** /* Hàm gửi dữ liệu (Data/Ký tự) tới LCD */
+  47:Core/Src/lcd20x4.c **** void LCD_Data(uint8_t data)
+  48:Core/Src/lcd20x4.c **** {
+ 235              		.loc 1 48 1 is_stmt 1 view -0
+ 236              		.cfi_startproc
+ 237              		@ args = 0, pretend = 0, frame = 0
+ 238              		@ frame_needed = 0, uses_anonymous_args = 0
+ARM GAS  C:\Users\HolmesPC\AppData\Local\Temp\cc1XSDWq.s 			page 6
+
+
+ 239              		.loc 1 48 1 is_stmt 0 view .LVU38
+ 240 0000 38B5     		push	{r3, r4, r5, lr}
+ 241              	.LCFI4:
+ 242              		.cfi_def_cfa_offset 16
+ 243              		.cfi_offset 3, -16
+ 244              		.cfi_offset 4, -12
+ 245              		.cfi_offset 5, -8
+ 246              		.cfi_offset 14, -4
+ 247 0002 0546     		mov	r5, r0
+  49:Core/Src/lcd20x4.c ****     // Chọn thanh ghi dữ liệu (RS = 1)
+  50:Core/Src/lcd20x4.c ****     HAL_GPIO_WritePin(LCD_PORT, RS_PIN, GPIO_PIN_SET);
+ 248              		.loc 1 50 5 is_stmt 1 view .LVU39
+ 249 0004 164C     		ldr	r4, .L15
+ 250 0006 0122     		movs	r2, #1
+ 251 0008 0221     		movs	r1, #2
+ 252 000a 2046     		mov	r0, r4
+ 253              	.LVL21:
+ 254              		.loc 1 50 5 is_stmt 0 view .LVU40
+ 255 000c FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 256              	.LVL22:
+  51:Core/Src/lcd20x4.c ****     
+  52:Core/Src/lcd20x4.c ****     // Gửi 4 bit cao
+  53:Core/Src/lcd20x4.c ****     LCD_Send_4Bit(data >> 4);
+ 257              		.loc 1 53 5 is_stmt 1 view .LVU41
+ 258 0010 2809     		lsrs	r0, r5, #4
+ 259 0012 FFF7FEFF 		bl	LCD_Send_4Bit
+ 260              	.LVL23:
+  54:Core/Src/lcd20x4.c ****     HAL_GPIO_WritePin(LCD_PORT, EN_PIN, GPIO_PIN_SET);
+ 261              		.loc 1 54 5 view .LVU42
+ 262 0016 0122     		movs	r2, #1
+ 263 0018 0421     		movs	r1, #4
+ 264 001a 2046     		mov	r0, r4
+ 265 001c FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 266              	.LVL24:
+  55:Core/Src/lcd20x4.c ****     delay_us(50);
+ 267              		.loc 1 55 5 view .LVU43
+ 268 0020 3220     		movs	r0, #50
+ 269 0022 FFF7FEFF 		bl	delay_us
+ 270              	.LVL25:
+  56:Core/Src/lcd20x4.c ****     HAL_GPIO_WritePin(LCD_PORT, EN_PIN, GPIO_PIN_RESET);
+ 271              		.loc 1 56 5 view .LVU44
+ 272 0026 0022     		movs	r2, #0
+ 273 0028 0421     		movs	r1, #4
+ 274 002a 2046     		mov	r0, r4
+ 275 002c FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 276              	.LVL26:
+  57:Core/Src/lcd20x4.c ****     delay_us(50);
+ 277              		.loc 1 57 5 view .LVU45
+ 278 0030 3220     		movs	r0, #50
+ 279 0032 FFF7FEFF 		bl	delay_us
+ 280              	.LVL27:
+  58:Core/Src/lcd20x4.c ****     
+  59:Core/Src/lcd20x4.c ****     // Gửi 4 bit thấp
+  60:Core/Src/lcd20x4.c ****     LCD_Send_4Bit(data & 0x0F);
+ 281              		.loc 1 60 5 view .LVU46
+ 282 0036 05F00F00 		and	r0, r5, #15
+ 283 003a FFF7FEFF 		bl	LCD_Send_4Bit
+ARM GAS  C:\Users\HolmesPC\AppData\Local\Temp\cc1XSDWq.s 			page 7
+
+
+ 284              	.LVL28:
+  61:Core/Src/lcd20x4.c ****     HAL_GPIO_WritePin(LCD_PORT, EN_PIN, GPIO_PIN_SET);
+ 285              		.loc 1 61 5 view .LVU47
+ 286 003e 0122     		movs	r2, #1
+ 287 0040 0421     		movs	r1, #4
+ 288 0042 2046     		mov	r0, r4
+ 289 0044 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 290              	.LVL29:
+  62:Core/Src/lcd20x4.c ****     delay_us(50);
+ 291              		.loc 1 62 5 view .LVU48
+ 292 0048 3220     		movs	r0, #50
+ 293 004a FFF7FEFF 		bl	delay_us
+ 294              	.LVL30:
+  63:Core/Src/lcd20x4.c ****     HAL_GPIO_WritePin(LCD_PORT, EN_PIN, GPIO_PIN_RESET);
+ 295              		.loc 1 63 5 view .LVU49
+ 296 004e 0022     		movs	r2, #0
+ 297 0050 0421     		movs	r1, #4
+ 298 0052 2046     		mov	r0, r4
+ 299 0054 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 300              	.LVL31:
+  64:Core/Src/lcd20x4.c ****     
+  65:Core/Src/lcd20x4.c ****     delay_us(100);
+ 301              		.loc 1 65 5 view .LVU50
+ 302 0058 6420     		movs	r0, #100
+ 303 005a FFF7FEFF 		bl	delay_us
+ 304              	.LVL32:
+  66:Core/Src/lcd20x4.c **** }
+ 305              		.loc 1 66 1 is_stmt 0 view .LVU51
+ 306 005e 38BD     		pop	{r3, r4, r5, pc}
+ 307              	.L16:
+ 308              		.align	2
+ 309              	.L15:
+ 310 0060 00080140 		.word	1073809408
+ 311              		.cfi_endproc
+ 312              	.LFE68:
+ 314              		.section	.text.LCD_Init,"ax",%progbits
+ 315              		.align	1
+ 316              		.global	LCD_Init
+ 317              		.syntax unified
+ 318              		.thumb
+ 319              		.thumb_func
+ 321              	LCD_Init:
+ 322              	.LFB69:
+  67:Core/Src/lcd20x4.c **** 
+  68:Core/Src/lcd20x4.c **** /* Hàm khởi tạo LCD ở chế độ 4-bit */
+  69:Core/Src/lcd20x4.c **** void LCD_Init(void)
+  70:Core/Src/lcd20x4.c **** {
+ 323              		.loc 1 70 1 is_stmt 1 view -0
+ 324              		.cfi_startproc
+ 325              		@ args = 0, pretend = 0, frame = 0
+ 326              		@ frame_needed = 0, uses_anonymous_args = 0
+ 327 0000 10B5     		push	{r4, lr}
+ 328              	.LCFI5:
+ 329              		.cfi_def_cfa_offset 8
+ 330              		.cfi_offset 4, -8
+ 331              		.cfi_offset 14, -4
+  71:Core/Src/lcd20x4.c ****     HAL_Delay(50);  // Mạch thật: Đợi 50ms cho điện áp màn hình LCD ổn định
+ARM GAS  C:\Users\HolmesPC\AppData\Local\Temp\cc1XSDWq.s 			page 8
+
+
+ 332              		.loc 1 71 5 view .LVU53
+ 333 0002 3220     		movs	r0, #50
+ 334 0004 FFF7FEFF 		bl	HAL_Delay
+ 335              	.LVL33:
+  72:Core/Src/lcd20x4.c ****     
+  73:Core/Src/lcd20x4.c ****     HAL_GPIO_WritePin(LCD_PORT, RS_PIN, GPIO_PIN_RESET);
+ 336              		.loc 1 73 5 view .LVU54
+ 337 0008 334C     		ldr	r4, .L19
+ 338 000a 0022     		movs	r2, #0
+ 339 000c 0221     		movs	r1, #2
+ 340 000e 2046     		mov	r0, r4
+ 341 0010 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 342              	.LVL34:
+  74:Core/Src/lcd20x4.c ****     HAL_GPIO_WritePin(LCD_PORT, EN_PIN, GPIO_PIN_RESET);
+ 343              		.loc 1 74 5 view .LVU55
+ 344 0014 0022     		movs	r2, #0
+ 345 0016 0421     		movs	r1, #4
+ 346 0018 2046     		mov	r0, r4
+ 347 001a FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 348              	.LVL35:
+  75:Core/Src/lcd20x4.c ****     
+  76:Core/Src/lcd20x4.c ****     // Trình tự khởi tạo 4-bit theo datasheet HD44780
+  77:Core/Src/lcd20x4.c ****     LCD_Send_4Bit(0x03);
+ 349              		.loc 1 77 5 view .LVU56
+ 350 001e 0320     		movs	r0, #3
+ 351 0020 FFF7FEFF 		bl	LCD_Send_4Bit
+ 352              	.LVL36:
+  78:Core/Src/lcd20x4.c ****     HAL_GPIO_WritePin(LCD_PORT, EN_PIN, GPIO_PIN_SET); delay_us(50); HAL_GPIO_WritePin(LCD_PORT, EN
+ 353              		.loc 1 78 5 view .LVU57
+ 354 0024 0122     		movs	r2, #1
+ 355 0026 0421     		movs	r1, #4
+ 356 0028 2046     		mov	r0, r4
+ 357 002a FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 358              	.LVL37:
+ 359              		.loc 1 78 56 view .LVU58
+ 360 002e 3220     		movs	r0, #50
+ 361 0030 FFF7FEFF 		bl	delay_us
+ 362              	.LVL38:
+ 363              		.loc 1 78 70 view .LVU59
+ 364 0034 0022     		movs	r2, #0
+ 365 0036 0421     		movs	r1, #4
+ 366 0038 2046     		mov	r0, r4
+ 367 003a FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 368              	.LVL39:
+  79:Core/Src/lcd20x4.c ****     HAL_Delay(5); 
+ 369              		.loc 1 79 5 view .LVU60
+ 370 003e 0520     		movs	r0, #5
+ 371 0040 FFF7FEFF 		bl	HAL_Delay
+ 372              	.LVL40:
+  80:Core/Src/lcd20x4.c ****     
+  81:Core/Src/lcd20x4.c ****     LCD_Send_4Bit(0x03);
+ 373              		.loc 1 81 5 view .LVU61
+ 374 0044 0320     		movs	r0, #3
+ 375 0046 FFF7FEFF 		bl	LCD_Send_4Bit
+ 376              	.LVL41:
+  82:Core/Src/lcd20x4.c ****     HAL_GPIO_WritePin(LCD_PORT, EN_PIN, GPIO_PIN_SET); delay_us(50); HAL_GPIO_WritePin(LCD_PORT, EN
+ 377              		.loc 1 82 5 view .LVU62
+ARM GAS  C:\Users\HolmesPC\AppData\Local\Temp\cc1XSDWq.s 			page 9
+
+
+ 378 004a 0122     		movs	r2, #1
+ 379 004c 0421     		movs	r1, #4
+ 380 004e 2046     		mov	r0, r4
+ 381 0050 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 382              	.LVL42:
+ 383              		.loc 1 82 56 view .LVU63
+ 384 0054 3220     		movs	r0, #50
+ 385 0056 FFF7FEFF 		bl	delay_us
+ 386              	.LVL43:
+ 387              		.loc 1 82 70 view .LVU64
+ 388 005a 0022     		movs	r2, #0
+ 389 005c 0421     		movs	r1, #4
+ 390 005e 2046     		mov	r0, r4
+ 391 0060 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 392              	.LVL44:
+  83:Core/Src/lcd20x4.c ****     HAL_Delay(1); 
+ 393              		.loc 1 83 5 view .LVU65
+ 394 0064 0120     		movs	r0, #1
+ 395 0066 FFF7FEFF 		bl	HAL_Delay
+ 396              	.LVL45:
+  84:Core/Src/lcd20x4.c ****     
+  85:Core/Src/lcd20x4.c ****     LCD_Send_4Bit(0x03);
+ 397              		.loc 1 85 5 view .LVU66
+ 398 006a 0320     		movs	r0, #3
+ 399 006c FFF7FEFF 		bl	LCD_Send_4Bit
+ 400              	.LVL46:
+  86:Core/Src/lcd20x4.c ****     HAL_GPIO_WritePin(LCD_PORT, EN_PIN, GPIO_PIN_SET); delay_us(50); HAL_GPIO_WritePin(LCD_PORT, EN
+ 401              		.loc 1 86 5 view .LVU67
+ 402 0070 0122     		movs	r2, #1
+ 403 0072 0421     		movs	r1, #4
+ 404 0074 2046     		mov	r0, r4
+ 405 0076 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 406              	.LVL47:
+ 407              		.loc 1 86 56 view .LVU68
+ 408 007a 3220     		movs	r0, #50
+ 409 007c FFF7FEFF 		bl	delay_us
+ 410              	.LVL48:
+ 411              		.loc 1 86 70 view .LVU69
+ 412 0080 0022     		movs	r2, #0
+ 413 0082 0421     		movs	r1, #4
+ 414 0084 2046     		mov	r0, r4
+ 415 0086 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 416              	.LVL49:
+  87:Core/Src/lcd20x4.c ****     HAL_Delay(1); 
+ 417              		.loc 1 87 5 view .LVU70
+ 418 008a 0120     		movs	r0, #1
+ 419 008c FFF7FEFF 		bl	HAL_Delay
+ 420              	.LVL50:
+  88:Core/Src/lcd20x4.c ****     
+  89:Core/Src/lcd20x4.c ****     LCD_Send_4Bit(0x02); // Chuyển sang chế độ 4-bit
+ 421              		.loc 1 89 5 view .LVU71
+ 422 0090 0220     		movs	r0, #2
+ 423 0092 FFF7FEFF 		bl	LCD_Send_4Bit
+ 424              	.LVL51:
+  90:Core/Src/lcd20x4.c ****     HAL_GPIO_WritePin(LCD_PORT, EN_PIN, GPIO_PIN_SET); delay_us(50); HAL_GPIO_WritePin(LCD_PORT, EN
+ 425              		.loc 1 90 5 view .LVU72
+ 426 0096 0122     		movs	r2, #1
+ARM GAS  C:\Users\HolmesPC\AppData\Local\Temp\cc1XSDWq.s 			page 10
+
+
+ 427 0098 0421     		movs	r1, #4
+ 428 009a 2046     		mov	r0, r4
+ 429 009c FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 430              	.LVL52:
+ 431              		.loc 1 90 56 view .LVU73
+ 432 00a0 3220     		movs	r0, #50
+ 433 00a2 FFF7FEFF 		bl	delay_us
+ 434              	.LVL53:
+ 435              		.loc 1 90 70 view .LVU74
+ 436 00a6 0022     		movs	r2, #0
+ 437 00a8 0421     		movs	r1, #4
+ 438 00aa 2046     		mov	r0, r4
+ 439 00ac FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 440              	.LVL54:
+  91:Core/Src/lcd20x4.c ****     HAL_Delay(2); 
+ 441              		.loc 1 91 5 view .LVU75
+ 442 00b0 0220     		movs	r0, #2
+ 443 00b2 FFF7FEFF 		bl	HAL_Delay
+ 444              	.LVL55:
+  92:Core/Src/lcd20x4.c ****     
+  93:Core/Src/lcd20x4.c ****     // Cấu hình các thông số
+  94:Core/Src/lcd20x4.c ****     LCD_Command(0x28); // 4-bit mode, 2 dòng (hỗ trợ cho 20x4), 5x8 font
+ 445              		.loc 1 94 5 view .LVU76
+ 446 00b6 2820     		movs	r0, #40
+ 447 00b8 FFF7FEFF 		bl	LCD_Command
+ 448              	.LVL56:
+  95:Core/Src/lcd20x4.c ****     LCD_Command(0x0C); // Bật hiển thị, tắt con trỏ
+ 449              		.loc 1 95 5 view .LVU77
+ 450 00bc 0C20     		movs	r0, #12
+ 451 00be FFF7FEFF 		bl	LCD_Command
+ 452              	.LVL57:
+  96:Core/Src/lcd20x4.c ****     LCD_Command(0x06); // Tự động tăng con trỏ
+ 453              		.loc 1 96 5 view .LVU78
+ 454 00c2 0620     		movs	r0, #6
+ 455 00c4 FFF7FEFF 		bl	LCD_Command
+ 456              	.LVL58:
+  97:Core/Src/lcd20x4.c ****     LCD_Command(0x01); // Xóa màn hình
+ 457              		.loc 1 97 5 view .LVU79
+ 458 00c8 0120     		movs	r0, #1
+ 459 00ca FFF7FEFF 		bl	LCD_Command
+ 460              	.LVL59:
+  98:Core/Src/lcd20x4.c ****     HAL_Delay(2); 
+ 461              		.loc 1 98 5 view .LVU80
+ 462 00ce 0220     		movs	r0, #2
+ 463 00d0 FFF7FEFF 		bl	HAL_Delay
+ 464              	.LVL60:
+  99:Core/Src/lcd20x4.c **** }
+ 465              		.loc 1 99 1 is_stmt 0 view .LVU81
+ 466 00d4 10BD     		pop	{r4, pc}
+ 467              	.L20:
+ 468 00d6 00BF     		.align	2
+ 469              	.L19:
+ 470 00d8 00080140 		.word	1073809408
+ 471              		.cfi_endproc
+ 472              	.LFE69:
+ 474              		.section	.text.LCD_Clear,"ax",%progbits
+ 475              		.align	1
+ARM GAS  C:\Users\HolmesPC\AppData\Local\Temp\cc1XSDWq.s 			page 11
+
+
+ 476              		.global	LCD_Clear
+ 477              		.syntax unified
+ 478              		.thumb
+ 479              		.thumb_func
+ 481              	LCD_Clear:
+ 482              	.LFB70:
+ 100:Core/Src/lcd20x4.c **** 
+ 101:Core/Src/lcd20x4.c **** /* Hàm xóa màn hình */
+ 102:Core/Src/lcd20x4.c **** void LCD_Clear(void)
+ 103:Core/Src/lcd20x4.c **** {
+ 483              		.loc 1 103 1 is_stmt 1 view -0
+ 484              		.cfi_startproc
+ 485              		@ args = 0, pretend = 0, frame = 0
+ 486              		@ frame_needed = 0, uses_anonymous_args = 0
+ 487 0000 08B5     		push	{r3, lr}
+ 488              	.LCFI6:
+ 489              		.cfi_def_cfa_offset 8
+ 490              		.cfi_offset 3, -8
+ 491              		.cfi_offset 14, -4
+ 104:Core/Src/lcd20x4.c ****     LCD_Command(0x01);
+ 492              		.loc 1 104 5 view .LVU83
+ 493 0002 0120     		movs	r0, #1
+ 494 0004 FFF7FEFF 		bl	LCD_Command
+ 495              	.LVL61:
+ 105:Core/Src/lcd20x4.c ****     HAL_Delay(2); 
+ 496              		.loc 1 105 5 view .LVU84
+ 497 0008 0220     		movs	r0, #2
+ 498 000a FFF7FEFF 		bl	HAL_Delay
+ 499              	.LVL62:
+ 106:Core/Src/lcd20x4.c **** }
+ 500              		.loc 1 106 1 is_stmt 0 view .LVU85
+ 501 000e 08BD     		pop	{r3, pc}
+ 502              		.cfi_endproc
+ 503              	.LFE70:
+ 505              		.section	.text.LCD_SetCursor,"ax",%progbits
+ 506              		.align	1
+ 507              		.global	LCD_SetCursor
+ 508              		.syntax unified
+ 509              		.thumb
+ 510              		.thumb_func
+ 512              	LCD_SetCursor:
+ 513              	.LVL63:
+ 514              	.LFB71:
+ 107:Core/Src/lcd20x4.c **** 
+ 108:Core/Src/lcd20x4.c **** /* Hàm đặt vị trí con trỏ cho LCD 20x4 */
+ 109:Core/Src/lcd20x4.c **** void LCD_SetCursor(uint8_t row, uint8_t col)
+ 110:Core/Src/lcd20x4.c **** {
+ 515              		.loc 1 110 1 is_stmt 1 view -0
+ 516              		.cfi_startproc
+ 517              		@ args = 0, pretend = 0, frame = 0
+ 518              		@ frame_needed = 0, uses_anonymous_args = 0
+ 519              		.loc 1 110 1 is_stmt 0 view .LVU87
+ 520 0000 08B5     		push	{r3, lr}
+ 521              	.LCFI7:
+ 522              		.cfi_def_cfa_offset 8
+ 523              		.cfi_offset 3, -8
+ 524              		.cfi_offset 14, -4
+ARM GAS  C:\Users\HolmesPC\AppData\Local\Temp\cc1XSDWq.s 			page 12
+
+
+ 111:Core/Src/lcd20x4.c ****     uint8_t address = 0;
+ 525              		.loc 1 111 5 is_stmt 1 view .LVU88
+ 526              	.LVL64:
+ 112:Core/Src/lcd20x4.c ****     switch (row)
+ 527              		.loc 1 112 5 view .LVU89
+ 528 0002 0328     		cmp	r0, #3
+ 529 0004 03D8     		bhi	.L24
+ 530 0006 DFE800F0 		tbb	[pc, r0]
+ 531              	.L26:
+ 532 000a 0A       		.byte	(.L30-.L26)/2
+ 533 000b 04       		.byte	(.L28-.L26)/2
+ 534 000c 06       		.byte	(.L27-.L26)/2
+ 535 000d 08       		.byte	(.L25-.L26)/2
+ 536              		.p2align 1
+ 537              	.L24:
+ 538 000e 0020     		movs	r0, #0
+ 539              	.LVL65:
+ 540              		.loc 1 112 5 is_stmt 0 view .LVU90
+ 541 0010 06E0     		b	.L29
+ 542              	.LVL66:
+ 543              	.L28:
+ 113:Core/Src/lcd20x4.c ****     {
+ 114:Core/Src/lcd20x4.c ****         case 0: address = 0x80; break; // Dòng 1
+ 115:Core/Src/lcd20x4.c ****         case 1: address = 0xC0; break; // Dòng 2
+ 544              		.loc 1 115 17 is_stmt 1 view .LVU91
+ 545              		.loc 1 115 33 view .LVU92
+ 546              		.loc 1 115 25 is_stmt 0 view .LVU93
+ 547 0012 C020     		movs	r0, #192
+ 548              	.LVL67:
+ 549              		.loc 1 115 9 view .LVU94
+ 550 0014 04E0     		b	.L29
+ 551              	.LVL68:
+ 552              	.L27:
+ 116:Core/Src/lcd20x4.c ****         case 2: address = 0x94; break; // Dòng 3
+ 553              		.loc 1 116 17 is_stmt 1 view .LVU95
+ 554              		.loc 1 116 33 view .LVU96
+ 555              		.loc 1 116 25 is_stmt 0 view .LVU97
+ 556 0016 9420     		movs	r0, #148
+ 557              	.LVL69:
+ 558              		.loc 1 116 9 view .LVU98
+ 559 0018 02E0     		b	.L29
+ 560              	.LVL70:
+ 561              	.L25:
+ 117:Core/Src/lcd20x4.c ****         case 3: address = 0xD4; break; // Dòng 4
+ 562              		.loc 1 117 17 is_stmt 1 view .LVU99
+ 563              		.loc 1 117 33 view .LVU100
+ 564              		.loc 1 117 25 is_stmt 0 view .LVU101
+ 565 001a D420     		movs	r0, #212
+ 566              	.LVL71:
+ 567              		.loc 1 117 9 view .LVU102
+ 568 001c 00E0     		b	.L29
+ 569              	.LVL72:
+ 570              	.L30:
+ 114:Core/Src/lcd20x4.c ****         case 1: address = 0xC0; break; // Dòng 2
+ 571              		.loc 1 114 25 view .LVU103
+ 572 001e 8020     		movs	r0, #128
+ 573              	.LVL73:
+ARM GAS  C:\Users\HolmesPC\AppData\Local\Temp\cc1XSDWq.s 			page 13
+
+
+ 574              	.L29:
+ 118:Core/Src/lcd20x4.c ****     }
+ 119:Core/Src/lcd20x4.c ****     address += col;
+ 575              		.loc 1 119 5 is_stmt 1 view .LVU104
+ 576              		.loc 1 119 13 is_stmt 0 view .LVU105
+ 577 0020 0844     		add	r0, r0, r1
+ 578              	.LVL74:
+ 120:Core/Src/lcd20x4.c ****     LCD_Command(address);
+ 579              		.loc 1 120 5 is_stmt 1 view .LVU106
+ 580 0022 C0B2     		uxtb	r0, r0
+ 581              		.loc 1 120 5 is_stmt 0 view .LVU107
+ 582 0024 FFF7FEFF 		bl	LCD_Command
+ 583              	.LVL75:
+ 121:Core/Src/lcd20x4.c **** }
+ 584              		.loc 1 121 1 view .LVU108
+ 585 0028 08BD     		pop	{r3, pc}
+ 586              		.cfi_endproc
+ 587              	.LFE71:
+ 589              		.section	.text.LCD_String,"ax",%progbits
+ 590              		.align	1
+ 591              		.global	LCD_String
+ 592              		.syntax unified
+ 593              		.thumb
+ 594              		.thumb_func
+ 596              	LCD_String:
+ 597              	.LVL76:
+ 598              	.LFB72:
+ 122:Core/Src/lcd20x4.c **** 
+ 123:Core/Src/lcd20x4.c **** /* Hàm in chuỗi ký tự */
+ 124:Core/Src/lcd20x4.c **** void LCD_String(char *str)
+ 125:Core/Src/lcd20x4.c **** {
+ 599              		.loc 1 125 1 is_stmt 1 view -0
+ 600              		.cfi_startproc
+ 601              		@ args = 0, pretend = 0, frame = 0
+ 602              		@ frame_needed = 0, uses_anonymous_args = 0
+ 603              		.loc 1 125 1 is_stmt 0 view .LVU110
+ 604 0000 10B5     		push	{r4, lr}
+ 605              	.LCFI8:
+ 606              		.cfi_def_cfa_offset 8
+ 607              		.cfi_offset 4, -8
+ 608              		.cfi_offset 14, -4
+ 609 0002 0446     		mov	r4, r0
+ 126:Core/Src/lcd20x4.c ****     while (*str)
+ 610              		.loc 1 126 5 is_stmt 1 view .LVU111
+ 611              		.loc 1 126 11 is_stmt 0 view .LVU112
+ 612 0004 02E0     		b	.L33
+ 613              	.LVL77:
+ 614              	.L34:
+ 127:Core/Src/lcd20x4.c ****     {
+ 128:Core/Src/lcd20x4.c ****         LCD_Data(*str++);
+ 615              		.loc 1 128 9 is_stmt 1 view .LVU113
+ 616              		.loc 1 128 22 is_stmt 0 view .LVU114
+ 617 0006 0134     		adds	r4, r4, #1
+ 618              	.LVL78:
+ 619              		.loc 1 128 9 view .LVU115
+ 620 0008 FFF7FEFF 		bl	LCD_Data
+ 621              	.LVL79:
+ARM GAS  C:\Users\HolmesPC\AppData\Local\Temp\cc1XSDWq.s 			page 14
+
+
+ 622              	.L33:
+ 126:Core/Src/lcd20x4.c ****     while (*str)
+ 623              		.loc 1 126 11 is_stmt 1 view .LVU116
+ 126:Core/Src/lcd20x4.c ****     while (*str)
+ 624              		.loc 1 126 12 is_stmt 0 view .LVU117
+ 625 000c 2078     		ldrb	r0, [r4]	@ zero_extendqisi2
+ 126:Core/Src/lcd20x4.c ****     while (*str)
+ 626              		.loc 1 126 11 view .LVU118
+ 627 000e 0028     		cmp	r0, #0
+ 628 0010 F9D1     		bne	.L34
+ 129:Core/Src/lcd20x4.c ****     }
+ 130:Core/Src/lcd20x4.c **** }...
+ 629              		.loc 1 130 1 view .LVU119
+ 630 0012 10BD     		pop	{r4, pc}
+ 631              		.loc 1 130 1 view .LVU120
+ 632              		.cfi_endproc
+ 633              	.LFE72:
+ 635              		.text
+ 636              	.Letext0:
+ 637              		.file 2 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2021.10\\arm-none-eabi\\include\\
+ 638              		.file 3 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2021.10\\arm-none-eabi\\include\\
+ 639              		.file 4 "Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f103xb.h"
+ 640              		.file 5 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h"
+ 641              		.file 6 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_gpio.h"
+ARM GAS  C:\Users\HolmesPC\AppData\Local\Temp\cc1XSDWq.s 			page 15
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 lcd20x4.c
+C:\Users\HolmesPC\AppData\Local\Temp\cc1XSDWq.s:18     .text.delay_us:00000000 $t
+C:\Users\HolmesPC\AppData\Local\Temp\cc1XSDWq.s:24     .text.delay_us:00000000 delay_us
+C:\Users\HolmesPC\AppData\Local\Temp\cc1XSDWq.s:78     .text.LCD_Send_4Bit:00000000 $t
+C:\Users\HolmesPC\AppData\Local\Temp\cc1XSDWq.s:84     .text.LCD_Send_4Bit:00000000 LCD_Send_4Bit
+C:\Users\HolmesPC\AppData\Local\Temp\cc1XSDWq.s:132    .text.LCD_Send_4Bit:00000038 $d
+C:\Users\HolmesPC\AppData\Local\Temp\cc1XSDWq.s:137    .text.LCD_Command:00000000 $t
+C:\Users\HolmesPC\AppData\Local\Temp\cc1XSDWq.s:143    .text.LCD_Command:00000000 LCD_Command
+C:\Users\HolmesPC\AppData\Local\Temp\cc1XSDWq.s:221    .text.LCD_Command:00000060 $d
+C:\Users\HolmesPC\AppData\Local\Temp\cc1XSDWq.s:226    .text.LCD_Data:00000000 $t
+C:\Users\HolmesPC\AppData\Local\Temp\cc1XSDWq.s:232    .text.LCD_Data:00000000 LCD_Data
+C:\Users\HolmesPC\AppData\Local\Temp\cc1XSDWq.s:310    .text.LCD_Data:00000060 $d
+C:\Users\HolmesPC\AppData\Local\Temp\cc1XSDWq.s:315    .text.LCD_Init:00000000 $t
+C:\Users\HolmesPC\AppData\Local\Temp\cc1XSDWq.s:321    .text.LCD_Init:00000000 LCD_Init
+C:\Users\HolmesPC\AppData\Local\Temp\cc1XSDWq.s:470    .text.LCD_Init:000000d8 $d
+C:\Users\HolmesPC\AppData\Local\Temp\cc1XSDWq.s:475    .text.LCD_Clear:00000000 $t
+C:\Users\HolmesPC\AppData\Local\Temp\cc1XSDWq.s:481    .text.LCD_Clear:00000000 LCD_Clear
+C:\Users\HolmesPC\AppData\Local\Temp\cc1XSDWq.s:506    .text.LCD_SetCursor:00000000 $t
+C:\Users\HolmesPC\AppData\Local\Temp\cc1XSDWq.s:512    .text.LCD_SetCursor:00000000 LCD_SetCursor
+C:\Users\HolmesPC\AppData\Local\Temp\cc1XSDWq.s:532    .text.LCD_SetCursor:0000000a $d
+C:\Users\HolmesPC\AppData\Local\Temp\cc1XSDWq.s:536    .text.LCD_SetCursor:0000000e $t
+C:\Users\HolmesPC\AppData\Local\Temp\cc1XSDWq.s:590    .text.LCD_String:00000000 $t
+C:\Users\HolmesPC\AppData\Local\Temp\cc1XSDWq.s:596    .text.LCD_String:00000000 LCD_String
+
+UNDEFINED SYMBOLS
+HAL_GPIO_WritePin
+HAL_Delay
